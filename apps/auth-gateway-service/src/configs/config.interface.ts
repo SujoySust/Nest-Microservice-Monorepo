@@ -26,7 +26,6 @@ export interface SecurityConfig {
   refreshSecret: string;
 }
 
-
 interface AuthProvider {
   model: AuthenticatableInterface;
   service: Type<AuthServiceInterface>;

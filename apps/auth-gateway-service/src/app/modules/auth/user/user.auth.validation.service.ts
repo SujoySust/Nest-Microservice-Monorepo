@@ -21,21 +21,20 @@ import { F_AuthValidationInterface } from './dto/interfaces';
 import { __ } from '@squareboat/nestjs-localization';
 import { PasswordService } from '../../../../lib/auth/password.service';
 import {
-  SERIVCE_URL,
   VERIFICATION_CODE_EVENT,
   VERIFICATION_CODE_METHOD,
-  COMMON_STATUS,
   USER_STATUS,
   ACTIVITY_EVENT,
   ACTIVITY,
-  USER_TYPE,
 } from '../../../helpers/core_constant';
+
+import { postgres_client } from '../../../helpers/core_function';
+import { User } from '../../../models/db/user.model';
 import {
   errorResponse,
   processException,
-  postgres_client,
-} from '../../../helpers/core_function';
-import { User } from '../../../models/db/user.model';
+} from '../../../../../../../libs/helpers/graphql/graphql.functions';
+import { COMMON_STATUS } from '../../../../../../../libs/helpers/common/common.constant';
 
 @Injectable()
 export class F_AuthValidationService implements F_AuthValidationInterface {

@@ -14,14 +14,18 @@ import { PasswordService } from '../../../../lib/auth/password.service';
 
 import {
   postgres_client,
-  errorResponse,
   validateUserAccountAndThrowErr,
-  successResponse,
-  processException,
-  __,
-  getRandomInt,
 } from '../../../helpers/core_function';
 import { Token } from '../../../../lib/auth/dto/refresh_token.input';
+import {
+  errorResponse,
+  processException,
+  successResponse,
+} from '../../../../../../../libs/helpers/graphql/graphql.functions';
+import {
+  __,
+  getRandomInt,
+} from '../../../../../../../libs/helpers/common/common.functions';
 
 @Injectable()
 export class B_AuthService implements AuthServiceInterface {

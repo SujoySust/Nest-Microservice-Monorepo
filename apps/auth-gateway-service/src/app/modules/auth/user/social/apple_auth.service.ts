@@ -9,18 +9,20 @@ import { lastValueFrom } from 'rxjs';
 import { UserSocialLoginInput } from '../dto/input.dto';
 import { UserSocialAuthRes } from '../dto/response.dto';
 import {
-  __,
   app,
   detectMobileApp,
-  errorResponse,
   parseDeviceInfo,
-  processException,
 } from '../../../../helpers/core_function';
 import { SettingService } from '../../../setting/setting.service';
 import {
   SETTINGS_GROUP,
   SETTINGS_SLUG,
-} from '../../../../helpers/slug_constants';
+} from '../../../../../../../../libs/helpers/common/common.slugs';
+import {
+  errorResponse,
+  processException,
+} from '../../../../../../../../libs/helpers/graphql/graphql.functions';
+import { __ } from '../../../../../../../../libs/helpers/common/common.functions';
 
 @Injectable()
 export class AppleAuthService {

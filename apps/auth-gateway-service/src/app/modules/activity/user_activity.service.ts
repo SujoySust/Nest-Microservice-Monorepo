@@ -1,5 +1,5 @@
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
 
 import { OrderBy } from '../../models/custom/common.input.model';
@@ -10,23 +10,17 @@ import { IpLocationService } from '../../core.services/ip_location.service';
 import { PaginationArgs } from '../../../lib/graphql/pagination/pagination.args';
 import { pOptionsBigInt } from '../../../lib/graphql/pagination/number_cursor';
 
-import {
-  ACTIVITY_EVENT,
-  ACTIVITY,
-  SERIVCE_URL,
-  USER_TYPE,
-  DB_QUERY_DEFAULT,
-} from '../../helpers/core_constant';
+import { ACTIVITY_EVENT, ACTIVITY } from '../../helpers/core_constant';
 
 import {
   app,
   detectDeviceType,
-  errorResponse,
   getLocation,
   parseDeviceInfo,
   postgres_client,
-  processException,
 } from '../../helpers/core_function';
+import { DB_QUERY_DEFAULT } from '../../../../../../libs/helpers/common/common.constant';
+import { processException } from '../../../../../../libs/helpers/graphql/graphql.functions';
 
 @Injectable()
 export class UserActivityService {

@@ -2,8 +2,9 @@ import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 
 import { IpLocationModel } from '../models/db/ip_location.model';
-import { app, getSettingValByKey, postgres_client } from '../helpers/core_function';
-import { SETTINGS_SLUG } from '../helpers/slug_constants';
+import { app, postgres_client } from '../helpers/core_function';
+import { getSettingValByKey } from '../../../../../libs/helpers/common/common.functions';
+import { SETTINGS_SLUG } from '../../../../../libs/helpers/common/common.slugs';
 
 export class IpLocationService {
   async getOrCreateIpLocation(ip_address: string): Promise<IpLocationModel> {

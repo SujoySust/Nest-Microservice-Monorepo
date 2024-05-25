@@ -6,11 +6,12 @@ import { SettingService } from '../../../setting/setting.service';
 import { UserSocialLoginInput } from '../dto/input.dto';
 import { SocialAuthInterface } from '../dto/interfaces';
 import { UserSocialAuthRes } from '../dto/response.dto';
-import { app, processException } from '../../../../helpers/core_function';
+import { app } from '../../../../helpers/core_function';
 import {
   SETTINGS_GROUP,
   SETTINGS_SLUG,
-} from '../../../../helpers/slug_constants';
+} from '../../../../../../../../libs/helpers/common/common.slugs';
+import { processException } from '../../../../../../../../libs/helpers/graphql/graphql.functions';
 
 @Injectable()
 export class GoogleAuthService implements SocialAuthInterface {

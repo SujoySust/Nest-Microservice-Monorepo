@@ -26,8 +26,6 @@ import { F_DeviceVerificationService } from './user.device.verification.service'
 import {
   ACTIVITY,
   ACTIVITY_EVENT,
-  CODE,
-  COMMON_STATUS,
   REG_TYPE,
   USER_STATUS,
   VERIFICATION_CODE_EVENT,
@@ -36,13 +34,10 @@ import {
 
 import {
   createUserCode,
-  errorResponse,
   getProtectedEmail,
   getProtectedPhone,
   getUUID,
   postgres_client,
-  processException,
-  successResponse,
   validateUserAccountAndThrowErr,
 } from '../../../helpers/core_function';
 
@@ -50,6 +45,15 @@ import { ResponseModel } from '../../../models/custom/common.response.model';
 import { User } from '../../../models/db/user.model';
 import { UserActivityService } from '../../activity/user_activity.service';
 import { Prisma } from '../../../../../../../libs/prisma/postgres/clients';
+import {
+  errorResponse,
+  processException,
+  successResponse,
+} from '../../../../../../../libs/helpers/graphql/graphql.functions';
+import {
+  CODE,
+  COMMON_STATUS,
+} from '../../../../../../../libs/helpers/common/common.constant';
 
 @Injectable()
 export class F_AuthService

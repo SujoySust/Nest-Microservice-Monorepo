@@ -2,17 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { Setting } from '../../models/db/setting.model';
 
 import { PrismaClient } from '@prisma/client';
+
+import { __ } from '@squareboat/nestjs-localization';
+import { postgres_client } from '../../helpers/core_function';
 import {
   SETTINGS_SLUG,
   SETTINGS_VALUE_TYPE,
-} from '../../helpers/slug_constants';
-import { __ } from '@squareboat/nestjs-localization';
-import { COMMON_STATUS } from '../../helpers/core_constant';
+} from '../../../../../../libs/helpers/common/common.slugs';
 import {
-  postgres_client,
-  successResponse,
   processException,
-} from '../../helpers/core_function';
+  successResponse,
+} from '../../../../../../libs/helpers/graphql/graphql.functions';
+import { COMMON_STATUS } from '../../../../../../libs/helpers/common/common.constant';
 
 @Injectable()
 export class SettingService {

@@ -1,61 +1,3 @@
-//
-export enum APP_ENV {
-  PRODUCTION = 'production',
-  DEVELOPMENT = 'development',
-  LOCAL = 'local',
-}
-
-//common status
-export enum COMMON_STATUS {
-  STATUS_INACTIVE = 0,
-  STATUS_ACTIVE = 1,
-  STATUS_COMPLETED = 2,
-  STATUS_PROCESSING = 3,
-  STATUS_SKIPPED = 4,
-  STATUS_FAILED = 5,
-  STATUS_REJECTED = 6,
-  STATUS_EXPIRED = 7,
-  STATUS_DISABLED = 9,
-  STATUS_SUSPENDED = 10,
-  STATUS_DELETED = 11,
-  STATUS_BLOCKED = 12,
-}
-
-export enum USER_STATUS {
-  INACTIVE = 0,
-  ACTIVE = 1,
-  DISABLED = 2,
-  SUSPENDED = 3,
-}
-
-export enum CODE {
-  //200
-  STATUS_OK = 200,
-
-  //400
-  BAD_REQUEST = 400,
-  UNAUTHORIZED = 401,
-  NOT_FOUND = 404,
-
-  //500
-  INTERNAL_SERVER_ERROR = 500,
-
-  //custom
-  VERIFY_EMAIL = 901,
-  VERIFY_PHONE = 902,
-  VERIFY_DEVICE = 903,
-  VERIFY_LOGIN_TWOFA = 904,
-  USER_SUSPENDED = 905,
-  ACCOUNT_NOT_ACTIVE = 906,
-  USER_DISABLED = 907,
-  COUNTRY_RESTRICTED = 1001,
-}
-
-export enum REGEX {
-  BTC_TXID = '^[a-fA-F0-9]{64}$',
-  ETH_TXHASH = '^0x[a-fA-F0-9]{64}$',
-}
-
 //file types
 export const FILE_TYPE_IMAGE = 'image';
 export const FILE_TYPE_DOCUMENT = 'document';
@@ -75,11 +17,6 @@ export const VERIFY_CODE_TYPE_AUTH = 1;
 export const VERIFY_CODE_RESEND_TIME_IN_SEC = 60;
 
 export const VERIFY_CODE_EXPIRATION_TIME_IN_MIN = 30;
-
-export enum USER_TYPE {
-  USER = 'user',
-  STAFF = 'staff',
-}
 
 export enum ACCOUNT_STATUS {
   PENDING = 1,
@@ -202,103 +139,7 @@ export enum ACTIVITY {
 export const MAXIMUM_RESET_VALUE_TRIES = 3;
 export const MAXIMUM_ANSWER_TRIES = 3;
 
-export enum ACTION {
-  PROCESSING = 0,
-  ACCEPT = 1,
-  REJECT = 2,
-  FAILED = 3,
-  REFUND = 4,
-  COMPLETE = 5,
-  CANCEL = 6,
-}
-
-export enum SECURITY_QUESTION_LIMIT {
-  MINIMUM = 1,
-  MAXIMUM = 5,
-}
-
-export enum KYC_LEVEL {
-  ID_VERIFICATION = 1,
-  ADDRESS_VERIFICATION = 2,
-}
-
-export const RESET_SECURITY_EXPIRATION_IN_MINUTE = 15;
-export const RESET_CREDENTIAL_EXPIRATION_IN_MINUTE = 15;
-
-export enum FILESYSTEM_DISK {
-  LOCAL = 'local',
-  AWS_S3 = 's3',
-}
-
-export enum STREAMMING_TYPE {
-  STREAM = 'stream',
-  BUFFER = 'buffer',
-}
-
-export enum DB_QUERY_DEFAULT {
-  ORDER_FIELD = 'updated_at',
-  ORDER_DIRECTION = 'desc',
-  LIMIT = 10,
-  OFFSET = 0,
-}
-
-export enum APP_DEFAULT {
-  LANG = 'en',
-  CURRENCY_CODE = 'USD',
-  CURRENCY_SYMBOL = '$',
-  COUNTRY_CODE = 'US',
-}
-
-export enum DEFAULT_DECIMAL {
-  FIAT_CURRENCY = 8,
-  CRYPTO_CURRENCY = 18,
-}
-
-export enum FEE_TYPE {
-  PERCENTAGE = 1,
-  FIXED = 2,
-}
-
-export enum DAYS {
-  ONE = 1,
-  SEVEN = 7,
-  FIFTEEN = 15,
-  THIRTY = 30,
-}
-
-export enum LOG_FILES {
-  DEVICE_TYPE = 'device_type.log',
-  EVENTS = 'events.log',
-  BULK_MAIL = 'bulk-mail.log',
-}
-
-export enum MENU_BIND_TYPE {
-  HEADER = 0,
-  URL = 1,
-  PAGE = 2,
-}
-
-export enum NOTICE_TYPE {
-  GENERAL_NOTICE = 1,
-  SYSTEM_MESSAGE = 2,
-  SYSTEM_ACTION_CMD = 3,
-}
-
-export enum GENERAL_NOTICE_ALERT_TYPE {
-  WARNING = 1,
-  INFO = 2,
-  ERROR = 3,
-}
-
-export enum SYSTEM_ACTION_CMD {
-  RELOAD = 1,
-}
-
 export const MAX_ACTIVE_NOTICE = 3;
-
-export enum SERIVCE_URL {
-  NOTIFICATION_SERVICE = 'http://localhost:3001',
-}
 
 // export const ACTIVITY_NOTIFICATION_MAP = {
 //   [ACTIVITY.NEW_DEVICE_VERIFICATION]:

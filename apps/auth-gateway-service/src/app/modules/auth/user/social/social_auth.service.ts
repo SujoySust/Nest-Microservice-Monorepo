@@ -5,7 +5,7 @@ import { SocialAuthInterface } from '../dto/interfaces';
 import { UserSocialAuthRes } from '../dto/response.dto';
 import { GoogleAuthService } from './google_auth.service';
 import { REG_TYPE } from '../../../../helpers/core_constant';
-import { processException } from '../../../../helpers/core_function';
+import { processException } from '../../../../../../../../libs/helpers/graphql/graphql.functions';
 
 @Injectable()
 export class SocialAuthService implements SocialAuthInterface {

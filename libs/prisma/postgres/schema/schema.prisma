@@ -61,7 +61,8 @@ model Staff {
   created_at        DateTime  @default(now())
   updated_at        DateTime? @updatedAt
 
-  role Role? @relation(fields: [role_id], references: [id])
+  role              Role?               @relation(fields: [role_id], references: [id])
+  notifications     StaffNotification[]
 
   @@map("staffs")
 }
@@ -94,10 +95,11 @@ model User {
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt
 
-  verify_codes UserVerifyCodes[]
-  setting      UserSetting?
-  devices      UserDevices[]
-  activities   UserActivities[]
+  verify_codes     UserVerifyCodes[]
+  setting          UserSetting?
+  devices          UserDevices[]
+  activities       UserActivities[]
+  notifications    UserNotification[]
 
   @@map("users")
 }
@@ -182,4 +184,36 @@ model UserActivities {
   device UserDevices? @relation(fields: [device_id], references: [id])
 
   @@map("user_activities")
+}
+
+model UserNotification {
+  id          BigInt    @id @default(autoincrement())
+  uid         String    @unique @default(cuid()) @db.VarChar(40)
+  notice_id   BigInt? // for event system message
+  user_id     BigInt?
+  title       String    @db.VarChar(500)
+  description String?   @db.VarChar(5000)
+  status      Int       @default(0) @db.SmallInt
+  created_at  DateTime  @default(now())
+  updated_at  DateTime? @updatedAt
+
+  user User? @relation(fields: [user_id], references: [id])
+
+  @@map("user_notifications")
+}
+
+model StaffNotification {
+  id          BigInt    @id @default(autoincrement())
+  uid         String    @unique @default(cuid()) @db.VarChar(40)
+  staff_id    Int?
+  title       String    @db.VarChar(500)
+  module      String?   @db.VarChar(20)
+  description String?   @db.VarChar(5000)
+  status      Int       @default(0) @db.SmallInt
+  created_at  DateTime  @default(now())
+  updated_at  DateTime? @updatedAt
+
+  staff Staff? @relation(fields: [staff_id], references: [id])
+
+  @@map("staff_notifications")
 }

@@ -1,6 +1,5 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { SETTINGS_GROUP } from '../../helpers/slug_constants';
 import { ResponseModel } from '../../models/custom/common.response.model';
 import { Setting } from '../../models/db/setting.model';
 import { apiSettingsInput } from './dto/api_settings.input';
@@ -10,6 +9,7 @@ import { mailSettingsInput } from './dto/mail_settings.input';
 import { metaSettingsInput } from './dto/meta_settings.input';
 import { socialSettingsInput } from './dto/social_settings.input';
 import { SettingService } from './setting.service';
+import { SETTINGS_GROUP } from '../../../../../../libs/helpers/common/common.slugs';
 
 @Resolver()
 export class SettingResolver {

@@ -1,17 +1,12 @@
 import {
-  BadRequestException,
   INestApplication,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { __ as trans } from '@squareboat/nestjs-localization';
 import { RedisPubSubService } from '../../lib/pubsub/redis_pub_sub.service';
-import { ResponseModel } from '../models/custom/common.response.model';
-import { PrismaClient } from '@prisma/client';
 import { User } from '../models/db/user.model';
 import { Staff } from '../models/db/staff.model';
-import { CODE, COMMON_STATUS, DEVICE_TYPE, USER_STATUS } from './core_constant';
 import {
   STAFF_SOCKET_IDS,
   USER_SOCKET_IDS,
@@ -19,8 +14,16 @@ import {
 import { MongoService, PostgresService } from '../../../../../libs/prisma/src';
 import { randomUUID } from 'crypto';
 import { IpLocationModel } from '../models/db/ip_location.model';
-import { DEVICE_TYPES_FOR_MOBILE, countryList } from './core_objects';
 import DeviceDetector, { DeviceDetectorResult } from 'device-detector-js';
+import { DEVICE_TYPE, USER_STATUS } from './core_constant';
+import { errorResponse } from '../../../../../libs/helpers/graphql/graphql.functions';
+import { __ } from '../../../../../libs/helpers/common/common.functions';
+import {
+  CODE,
+  COMMON_STATUS,
+} from '../../../../../libs/helpers/common/common.constant';
+import { DEVICE_TYPES_FOR_MOBILE } from './core_objects';
+import { COUNTRY_LIST } from '../../../../../libs/helpers/common/common.objects';
 
 export let app: NestExpressApplication | INestApplication;
 export let redis_pub_sub: RedisPubSubService;
@@ -35,162 +38,6 @@ export function setApp(nestapp: NestExpressApplication | INestApplication) {
 
 export function initCoreServices() {
   redis_pub_sub = app.get(RedisPubSubService);
-}
-
-Number.prototype['noExponents'] = function () {
-  const data = String(this).split(/[eE]/);
-  if (data.length == 1) return data[0];
-
-  let z = '';
-  const sign = this < 0 ? '-' : '';
-  const str = data[0].replace('.', '');
-  let mag = Number(data[1]) + 1;
-
-  if (mag < 0) {
-    z = sign + '0.';
-    while (mag++) z += '0';
-    return z + str.replace(/^\-/, '');
-  }
-  mag -= str.length;
-  while (mag--) z += '0';
-  return str + z;
-};
-
-BigInt.prototype['noExponents'] = function () {
-  const data = String(this).split(/[eE]/);
-  if (data.length == 1) return data[0];
-
-  let z = '';
-  const sign = this < 0 ? '-' : '';
-  const str = data[0].replace('.', '');
-  let mag = Number(data[1]) + 1;
-
-  if (mag < 0) {
-    z = sign + '0.';
-    while (mag++) z += '0';
-    return z + str.replace(/^\-/, '');
-  }
-  mag -= str.length;
-  while (mag--) z += '0';
-  return str + z;
-};
-
-BigInt.prototype['toJSON'] = function () {
-  return this.toString();
-};
-
-export function noExponents(value: any): string {
-  return Number(value)['noExponents']();
-}
-
-export function __(key: string, lang?: string) {
-  try {
-    return trans(key, lang || global.lang).replace('ERR::INVALID KEY ==> ', '');
-  } catch (e) {
-    // console.error(e.stack);
-    return key;
-  }
-}
-
-export function fakeTrans(key: string) {
-  return key;
-}
-
-export function lcfirst(str: string) {
-  str += '';
-  const f = str.charAt(0).toLowerCase();
-  return f + str.substring(1);
-}
-
-export function processException(e) {
-  checkPrismaError(e);
-  if (
-    (e.hasOwnProperty('response') &&
-      !e.response.hasOwnProperty('success') &&
-      !e.response.hasOwnProperty('data')) ||
-    !e.hasOwnProperty('response')
-  ) {
-    console.error(e.stack);
-  }
-  throw e;
-}
-
-function checkPrismaError(e) {
-  /* if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
-    const field = e.meta['target'][0];
-    if (field === 'email')
-      throw new ConflictException(__(`Email already used.`));
-    if (field === 'phone')
-      throw new ConflictException(__(`Phone number already used.`));
-    else {
-      console.error(e.stack);
-      throw new Error(__('Something went wrong. Please try again after some time.'));
-    }
-  } else */
-
-  if (
-    e.message?.includes('SqlState(E22003)') ||
-    e.message?.includes(
-      'A number used in the query does not fit into a 64 bit signed integer',
-    )
-  ) {
-    // console.log(e.stack, LOG_LEVEL_ERROR, undefined, undefined, 5);
-    throw new BadRequestException(
-      errorResponse(__('Number field maximum limit exceeded')),
-    );
-  } else if (
-    String(e.message)?.search(/Unknown argument.*? Did you mean/) >= 0
-  ) {
-    //
-    let msg = __('Invalid sort or orderBy column name');
-    const parseCol = e.message.match(/Unknown argument \`.*?\`/);
-    if (parseCol?.length) {
-      const wrongColName = String(parseCol[0]).replace('Unknown argument ', '');
-      msg += `: ${wrongColName}`;
-    }
-    throw new BadRequestException(errorResponse(msg));
-    //
-  } else if (
-    e instanceof PrismaClient.PrismaClientKnownRequestError ||
-    e instanceof PrismaClient.PrismaClientUnknownRequestError ||
-    e instanceof PrismaClient.PrismaClientValidationError ||
-    e instanceof PrismaClient.PrismaClientInitializationError ||
-    e instanceof PrismaClient.PrismaClientRustPanicError
-  ) {
-    // console.log(e.stack, LOG_LEVEL_ERROR, undefined, undefined, 5);
-    throw new Error(
-      __('Something went wrong. Please try again after some time.'),
-    );
-  }
-}
-
-export function successResponse(
-  msg?: string,
-  data?: object,
-  code?: number,
-): ResponseModel {
-  return {
-    success: true,
-    message: msg ?? '',
-    data: data || null,
-    code: code || 200,
-  };
-}
-
-export function errorResponse(
-  msg?: string,
-  data?: object,
-  code?: number,
-  messages?: string[],
-): ResponseModel {
-  return {
-    success: false,
-    message:
-      msg || __('Something went wrong. Please try again after some time.'),
-    messages: messages ?? [],
-    data: data || null,
-    code: code || 500,
-  };
 }
 
 export function get_online_status(
@@ -277,51 +124,6 @@ export function validateUserAccountAndThrowErr(user: any) {
   }
 }
 
-export async function getSettingValByKey(
-  key_or_slug: string,
-  prisma?: PostgresService | null,
-): Promise<string> {
-  prisma = prisma ? prisma : postgres_client;
-  const setting = await prisma.setting.findFirst({
-    where: {
-      option_key: key_or_slug,
-    },
-  });
-  return setting ? setting.option_value : '';
-}
-
-export async function getSettingsGroup(
-  group_names?: string[],
-  key_or_slugs?: string[],
-  prisma?: PostgresService,
-) {
-  prisma = prisma ? prisma : postgres_client;
-  const setting = await prisma.setting.findMany({
-    where: {
-      OR: [
-        {
-          option_group: {
-            in: group_names,
-          },
-        },
-        {
-          option_key: {
-            in: key_or_slugs,
-          },
-        },
-      ],
-    },
-  });
-  let settingObj = {};
-  if (setting) {
-    settingObj = setting.reduce(
-      (acc, cur) => ({ ...acc, [cur.option_key]: cur.option_value }),
-      {},
-    );
-  }
-  return settingObj;
-}
-
 export function getLocation(ipLocation: IpLocationModel): string {
   if (!ipLocation) return '';
   let location = '';
@@ -335,9 +137,9 @@ export function getLocation(ipLocation: IpLocationModel): string {
 
 export function getCountry(input: string = null) {
   if (input != null) {
-    return countryList[input];
+    return COUNTRY_LIST[input];
   } else {
-    return countryList;
+    return COUNTRY_LIST;
   }
 }
 
@@ -410,27 +212,4 @@ export function checkStatusAndGetUser(user: any) {
         CODE.ACCOUNT_NOT_ACTIVE,
       ),
     );
-}
-
-export function getRandomInt(length: number, skip_int?: number) {
-  let result = '';
-  let characters = '0123456789';
-  if (skip_int >= 0) {
-    characters = characters.replace(skip_int.toString(), '');
-  }
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-
-  /* let init_number = 1;
-  let multiply_number = 9;
-  for (let i = 1; i < digit; i++) {
-    init_number *= 10;
-    multiply_number *= 10;
-  }
-  return Math.floor(
-    Math.random() * init_number + Math.random() * multiply_number,
-  ); */
 }
