@@ -1,28 +1,34 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { Prisma, PrismaClient, UserDevices } from '@prisma/client';
 import { Request } from 'express';
-import { LoginResponse } from '../../../../libs/auth/models/login_response.model';
-import {
-  ACTIVITY,
-  ACTIVITY_EVENT,
-  CODE,
-  COMMON_STATUS,
-} from '../../../helpers/core_constants';
-import {
-  __,
-  detectDeviceType,
-  errorResponse,
-  getLocation,
-  getUUID,
-  parseDeviceInfo,
-  postgres_client,
-  successResponse,
-} from '../../../helpers/core_functions';
 
 import { DefaultArgs } from '@prisma/client/runtime/library';
 import { IpLocationService } from '../../../core.services/ip_location.service';
 import { User } from '../../../models/db/user.model';
 import { UserActivityService } from '../../activity/user_activity.service';
+import { __ } from '@squareboat/nestjs-localization';
+
+import {
+  Prisma,
+  PrismaClient,
+  UserDevices,
+} from '../../../../../../../libs/prisma/postgres/clients';
+
+import { LoginResponse } from '../../../../lib/auth/models/login_response.model';
+import {
+  COMMON_STATUS,
+  ACTIVITY_EVENT,
+  ACTIVITY,
+  CODE,
+} from '../../../helpers/core_constant';
+import {
+  postgres_client,
+  parseDeviceInfo,
+  detectDeviceType,
+  getUUID,
+  errorResponse,
+  successResponse,
+  getLocation,
+} from '../../../helpers/core_function';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ms = require('ms');
 @Injectable()

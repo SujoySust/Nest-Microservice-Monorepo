@@ -7,17 +7,16 @@ import {
   NextFn,
   ObjectType,
 } from '@nestjs/graphql';
-import { HiddenIdBaseModelBigInt } from '../../../libs/model/base.model';
-import { NOTIFICATION_STATUS } from '../../helpers/notification/core_constants';
+import { HiddenIdBaseModelBigInt } from '../../../lib/model/base.model';
 
 const StatusMW: FieldMiddleware = async (
   ctx: MiddlewareContext,
   next: NextFn,
 ) => {
   const notif: StaffNotificationModel = ctx.source;
-  let status = await next();
+  const status = await next();
   if (!notif.staff_id) {
-    status = NOTIFICATION_STATUS.READ;
+    // status = NOTIFICATION_STATUS.READ;
   }
   return status;
 };

@@ -6,10 +6,11 @@ import {
   MiddlewareContext,
   ObjectType,
 } from '@nestjs/graphql';
-import { AuthenticatableInterface } from '../../../libs/auth/authenticatable.interface';
-import { get_online_status } from '../../helpers/core_functions';
-import { g2faEnableCheckMiddleware } from '../../middlewares/g2fa_enable_check.field.middleware';
+
 import { Role } from './role.model';
+import { AuthenticatableInterface } from '../../../lib/auth/authenticatable.interface';
+import { get_online_status } from '../../helpers/core_function';
+import { g2faEnableCheckMiddleware } from '../../middlewares/g2fa_enable_check.field.middleware';
 
 const OnlineStatusMW: FieldMiddleware = async (ctx: MiddlewareContext) => {
   const staff = ctx.source;

@@ -1,5 +1,4 @@
 import { Request } from 'express';
-import { VERIFICATION_CODE_METHOD } from '../../../../helpers/core_constants';
 import { User } from '../../../../models/db/user.model';
 import {
   PasswordResetInput,
@@ -9,6 +8,7 @@ import {
   UserSocialLoginInput,
 } from './input.dto';
 import { UserSocialAuthRes } from './response.dto';
+import { VERIFICATION_CODE_METHOD } from '../../../../helpers/core_constant';
 
 export interface F_AuthValidationInterface {
   validateSignup: (payload: SignupInput) => Promise<SignupInput>;

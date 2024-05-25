@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { HiddenIdBaseModelInt } from '../../../libs/model/base.model';
+import { HiddenIdBaseModelInt } from '../../../lib/model/base.model';
 import { TranslationMW } from '../../middlewares/translation.field.middleware';
 
 @ObjectType()

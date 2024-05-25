@@ -7,15 +7,17 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { Match } from '../../../../../libs/decorators/match.decorator';
-import { Unique } from '../../../../../libs/decorators/unique.decorator';
-import { __ } from '../../../../helpers/core_functions';
+
 import { ResponseModel } from '../../../../models/custom/common.response.model';
+
+import { Match } from '../../../../../lib/decorators/match.decorator';
+import { Unique } from '../../../../../lib/decorators/unique.decorator';
 
 import {
   VERIFICATION_CODE_EVENT,
   VERIFICATION_CODE_METHOD,
-} from '../../../../helpers/core_constants';
+} from '../../../../helpers/core_constant';
+import { __ } from '../../../../helpers/core_function';
 
 @InputType()
 export class SendAuthVerifyCodeInput {

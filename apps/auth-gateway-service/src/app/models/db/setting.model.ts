@@ -1,6 +1,5 @@
 import { Field, HideField, Int, ObjectType } from '@nestjs/graphql';
 import { TranslationMW } from '../../middlewares/translation.field.middleware';
-import { settingsMediaLink } from '../../middlewares/settings_media_link_add.field.middleware';
 
 @ObjectType()
 export class Setting {
@@ -18,7 +17,7 @@ export class Setting {
 
   @Field(() => String, {
     nullable: true,
-    middleware: [settingsMediaLink, TranslationMW],
+    middleware: [TranslationMW],
   })
   option_value: string;
 }

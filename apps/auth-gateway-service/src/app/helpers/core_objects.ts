@@ -1,5 +1,10 @@
-import { REG_TYPE, USER_CREDENTIALS, VERIFICATION_CODE_METHOD, VERIFICATION_CODE_EVENT, DEVICE_TYPE } from "./core_constant";
-
+import {
+  REG_TYPE,
+  USER_CREDENTIALS,
+  VERIFICATION_CODE_METHOD,
+  VERIFICATION_CODE_EVENT,
+  DEVICE_TYPE,
+} from './core_constant';
 
 function __(str: string) {
   return str;

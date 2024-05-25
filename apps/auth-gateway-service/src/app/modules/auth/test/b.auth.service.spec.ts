@@ -2,16 +2,16 @@ import { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PasswordService } from '../../../../libs/auth/password.service';
-import { postgres_client, setApp } from '../../../helpers/core_functions';
 
 import { PassportModule } from '@nestjs/passport';
-import { TestModuleDependecy } from '../../../../../test/utils/unit/module.dependency';
 import { SecurityConfig } from '../../../../configs/config.interface';
-import { JwtHelper } from '../../../../libs/auth/jwt.helper';
-import { PrismaService } from '../../../../libs/prisma/prisma.service';
 import { AuthModule } from '../auth.module';
 import { B_AuthService } from '../staff/staff.auth.service';
+import { JwtHelper } from '../../../../lib/auth/jwt.helper';
+import { PasswordService } from '../../../../lib/auth/password.service';
+import { setApp, postgres_client } from '../../../helpers/core_function';
+import { PostgresService } from '../../../../../../../libs/prisma/src';
+import { TestModuleDependecy } from '../../../../../test/unit/module.dependency';
 
 describe('StaffAuthService', () => {
   let staffAuthService: B_AuthService;
@@ -36,7 +36,7 @@ describe('StaffAuthService', () => {
           inject: [ConfigService],
         }),
       ],
-      providers: [PasswordService, JwtHelper, PrismaService],
+      providers: [PasswordService, JwtHelper, PostgresService],
     }).compile();
 
     app = module.createNestApplication();
@@ -90,7 +90,7 @@ describe('StaffAuthService', () => {
           email: 'admin@email.com',
         },
         data: {
-          resetCode: code,
+          resetcode: code,
         },
       });
       const result = await staffAuthService.resetStaffPassword({

@@ -411,3 +411,26 @@ export function checkStatusAndGetUser(user: any) {
       ),
     );
 }
+
+export function getRandomInt(length: number, skip_int?: number) {
+  let result = '';
+  let characters = '0123456789';
+  if (skip_int >= 0) {
+    characters = characters.replace(skip_int.toString(), '');
+  }
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+
+  /* let init_number = 1;
+  let multiply_number = 9;
+  for (let i = 1; i < digit; i++) {
+    init_number *= 10;
+    multiply_number *= 10;
+  }
+  return Math.floor(
+    Math.random() * init_number + Math.random() * multiply_number,
+  ); */
+}

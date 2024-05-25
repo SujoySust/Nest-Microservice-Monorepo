@@ -1,5 +1,5 @@
 import { HideField, ObjectType } from '@nestjs/graphql';
-import { HiddenIdBaseModelBigInt } from '../../../libs/model/base.model';
+import { HiddenIdBaseModelBigInt } from '../../../lib/model/base.model';
 
 @ObjectType()
 export class UserVerifyCodes extends HiddenIdBaseModelBigInt {

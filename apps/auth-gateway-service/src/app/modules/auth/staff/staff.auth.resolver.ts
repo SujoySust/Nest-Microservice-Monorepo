@@ -1,8 +1,4 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import {
-  RefreshTokenInput,
-  Token,
-} from '../../../../libs/auth/dto/refresh_token.input';
 import { ResponseModel } from '../../../models/custom/common.response.model';
 import { Staff } from '../../../models/db/staff.model';
 import {
@@ -11,6 +7,11 @@ import {
   StaffPasswordResetInput,
 } from './dto/input.dto';
 import { B_AuthService } from './staff.auth.service';
+
+import {
+  RefreshTokenInput,
+  Token,
+} from '../../../../lib/auth/dto/refresh_token.input';
 
 @Resolver('StaffAuth')
 export class B_AuthResolver {

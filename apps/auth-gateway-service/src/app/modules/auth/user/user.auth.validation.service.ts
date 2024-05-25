@@ -130,7 +130,7 @@ export class F_AuthValidationService implements F_AuthValidationInterface {
     const user = await postgres_client.user.findFirst({
       where: {
         usercode: usercode,
-      }
+      },
     });
     if (!user) {
       throw new BadRequestException(errorResponse(__('Invalid user code')));
@@ -158,7 +158,7 @@ export class F_AuthValidationService implements F_AuthValidationInterface {
       },
       include: {
         setting: true,
-      }
+      },
     });
 
     if (!user) {
@@ -316,7 +316,6 @@ export class F_AuthValidationService implements F_AuthValidationInterface {
     //     },
     //     user.id,
     //   );
-
     //   if (!res.success) {
     //     throw new BadRequestException(
     //       errorResponse(__('Verification failed!')),
@@ -331,10 +330,10 @@ export class F_AuthValidationService implements F_AuthValidationInterface {
     if (referral_code) {
       const referralUser = await postgres_client.user.findFirst({
         where: {
-          usercode: referral_code
-        }
+          usercode: referral_code,
+        },
       });
-    
+
       if (!referralUser) {
         throw new BadRequestException(
           errorResponse(__('Invalid referral code!')),

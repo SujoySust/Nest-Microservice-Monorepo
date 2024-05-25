@@ -1,6 +1,6 @@
 import { ObjectType, HideField, Field, Int } from '@nestjs/graphql';
-import { HiddenIdBaseModelBigInt } from '../../../libs/model/base.model';
 import { FieldMiddleware, MiddlewareContext } from '@nestjs/graphql';
+import { HiddenIdBaseModelBigInt } from '../../../lib/model/base.model';
 
 const isLoggedInCheck: FieldMiddleware = async (ctx: MiddlewareContext) => {
   const source: UserDeviceModel = ctx.source;

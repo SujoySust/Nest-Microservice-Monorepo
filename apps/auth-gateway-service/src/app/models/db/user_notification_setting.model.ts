@@ -1,5 +1,5 @@
-import { HiddenIdBaseModelBigInt } from 'src/libs/model/base.model';
 import { Field, HideField, ObjectType } from '@nestjs/graphql';
+import { HiddenIdBaseModelBigInt } from '../../../lib/model/base.model';
 
 @ObjectType()
 export class UserNotificationSetting extends HiddenIdBaseModelBigInt {

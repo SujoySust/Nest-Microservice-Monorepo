@@ -1,25 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Token } from '../../../../libs/auth/dto/refresh_token.input';
-import { AuthServiceInterface } from '../../../../libs/auth/interfaces/auth.service.interface';
-import { JwtHelper } from '../../../../libs/auth/jwt.helper';
-import { PasswordService } from '../../../../libs/auth/password.service';
-import {
-  __,
-  errorResponse,
-  getRandomInt,
-  postgres_client,
-  processException,
-  sendHttpPostRequest,
-  successResponse,
-  validateUserAccountAndThrowErr,
-} from '../../../helpers/core_functions';
 
-import { SERIVCE_URL, USER_TYPE } from '../../../helpers/core_constants';
-import {
-  EXTERNAL_NOTIFICATION_METHOD,
-  NOTIFICATION_TYPE,
-  USER_NOTIFICATION_EVENTS,
-} from '../../../helpers/notification/core_constants';
 import { ResponseModel } from '../../../models/custom/common.response.model';
 import { Staff } from '../../../models/db/staff.model';
 import {
@@ -27,6 +7,21 @@ import {
   StaffLoginInput,
   StaffPasswordResetInput,
 } from './dto/input.dto';
+
+import { AuthServiceInterface } from '../../../../lib/auth/interfaces/auth.service.interface';
+import { JwtHelper } from '../../../../lib/auth/jwt.helper';
+import { PasswordService } from '../../../../lib/auth/password.service';
+
+import {
+  postgres_client,
+  errorResponse,
+  validateUserAccountAndThrowErr,
+  successResponse,
+  processException,
+  __,
+  getRandomInt,
+} from '../../../helpers/core_function';
+import { Token } from '../../../../lib/auth/dto/refresh_token.input';
 
 @Injectable()
 export class B_AuthService implements AuthServiceInterface {
@@ -94,23 +89,25 @@ export class B_AuthService implements AuthServiceInterface {
         },
       });
 
-      const res = await sendHttpPostRequest(
-        SERIVCE_URL.NOTIFICATION_SERVICE,
-        'notifications/send',
-        {
-          user_type: USER_TYPE.STAFF,
-          notification_type: NOTIFICATION_TYPE.EXTERNAL,
-          method: EXTERNAL_NOTIFICATION_METHOD.EMAIL,
-          event: USER_NOTIFICATION_EVENTS.RESET_PASSWORD,
-        },
-        staff.id,
-      );
+      // TODO: send notificaiton from here
 
-      if (!res.success) {
-        throw new BadRequestException(
-          errorResponse(__('Reset password mail sending failed!')),
-        );
-      }
+      // const res = await sendHttpPostRequest(
+      //   SERIVCE_URL.NOTIFICATION_SERVICE,
+      //   'notifications/send',
+      //   {
+      //     user_type: USER_TYPE.STAFF,
+      //     notification_type: NOTIFICATION_TYPE.EXTERNAL,
+      //     method: EXTERNAL_NOTIFICATION_METHOD.EMAIL,
+      //     event: USER_NOTIFICATION_EVENTS.RESET_PASSWORD,
+      //   },
+      //   staff.id,
+      // );
+
+      // if (!res.success) {
+      //   throw new BadRequestException(
+      //     errorResponse(__('Reset password mail sending failed!')),
+      //   );
+      // }
 
       return successResponse(__('Reset password mail sent successfully!'));
     } catch (e) {
