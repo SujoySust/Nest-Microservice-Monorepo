@@ -1,0 +1,185 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../clients"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Setting {
+  id            Int     @id @default(autoincrement())
+  option_group  String? @db.VarChar(255)
+  option_key    String  @unique @db.VarChar(255)
+  option_value  String? @db.Text
+  value_type    Int     @default(1) @db.SmallInt
+  client_access Int     @default(1) @db.SmallInt
+
+  @@map("settings")
+}
+
+model BlockedCountry {
+  id           BigInt @id @default(autoincrement())
+  country_code String @unique @db.VarChar(10)
+
+  @@map("blocked_countries")
+}
+
+model IpLocation {
+  id           String  @unique @default(cuid()) @db.VarChar(100)
+  ip_address   String  @unique
+  city         String? @db.VarChar(100)
+  region       String? @db.VarChar(100)
+  country_code String? @db.VarChar(10)
+  other_infos  String?
+
+  @@map("ip_locations")
+}
+
+model Staff {
+  id                Int       @id @default(autoincrement())
+  username          String    @unique @db.VarChar(255)
+  name              String    @db.VarChar(255)
+  avatar            String?   @db.VarChar(255)
+  description       String?
+  email             String    @unique @db.VarChar(255)
+  phone             String?   @unique @db.VarChar(255)
+  email_verified_at DateTime?
+  is_email_verified Boolean   @default(false)
+  resetcode         String?   @db.VarChar(255)
+  google2fa_secret  String?   @db.VarChar(255)
+  password          String    @db.VarChar(255)
+  role_id           Int?
+  status            Int?      @default(1) @db.SmallInt
+  created_at        DateTime  @default(now())
+  updated_at        DateTime? @updatedAt
+
+  role Role? @relation(fields: [role_id], references: [id])
+
+  @@map("staffs")
+}
+
+model Role {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  permissions String?
+  created_at  DateTime  @default(now())
+  updated_at  DateTime? @updatedAt
+
+  staffs Staff[]
+
+  @@map("roles")
+}
+
+model User {
+  id         BigInt    @id @default(autoincrement())
+  usercode   String    @unique @db.VarChar(100)
+  fullname   String?   @db.VarChar(255)
+  nickname   String?   @db.VarChar(255)
+  email      String?   @unique()
+  password   String?   @db.VarChar(255)
+  phone      String?   @unique @db.VarChar(25)
+  avatar     String?   @db.VarChar(255)
+  type       Int       @default(1) @db.SmallInt
+  reg_type   Int       @default(1) @db.SmallInt
+  social_id  String?   @db.VarChar(255)
+  status     Int       @default(0) @db.SmallInt
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  verify_codes UserVerifyCodes[]
+  setting      UserSetting?
+  devices      UserDevices[]
+  activities   UserActivities[]
+
+  @@map("users")
+}
+
+model UserDevices {
+  id                      BigInt    @id @default(autoincrement())
+  user_id                 BigInt
+  device_type             String?   @db.VarChar(255)
+  device_token            String    @unique @db.VarChar(40)
+  device_token_expires_at DateTime?
+  login_secret            String?   @db.VarChar(500)
+  login_secret_expires_at DateTime?
+  device_info             String?   @db.VarChar(500)
+  user_agent              String?   @db.VarChar(300)
+  ip_address              String?   @db.VarChar(255)
+  location                String?   @db.VarChar(255)
+  status                  Int       @default(0) @db.SmallInt
+  created_at              DateTime  @default(now())
+  updated_at              DateTime? @updatedAt
+
+  user       User             @relation(fields: [user_id], references: [id])
+  activities UserActivities[]
+
+  @@map("user_devices")
+}
+
+model UserVerifyCodes {
+  id           BigInt    @id @default(autoincrement())
+  user_id      BigInt
+  method       Int       @db.SmallInt
+  event        Int       @db.SmallInt
+  code         String?   @db.VarChar(10)
+  status       Int       @default(0) @db.SmallInt
+  last_sent_at DateTime
+  expires_at   DateTime
+  created_at   DateTime  @default(now())
+  updated_at   DateTime? @updatedAt
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("user_verify_codes")
+}
+
+model UserSetting {
+  id                        BigInt    @id @default(autoincrement())
+  user_id                   BigInt    @unique
+  email_verified            Int       @default(0) @db.SmallInt
+  last_email_verified_at    DateTime?
+  phone_verified            Int       @default(0) @db.SmallInt
+  last_phone_verified_at    DateTime?
+  login_twofa_enabled       Int       @default(0) @db.SmallInt
+  google2fa_secret          String?   @db.VarChar(255)
+  last_google2fa_updated_at DateTime?
+  last_login_time           DateTime?
+  email_marketing_enabled   Int       @default(0) @db.SmallInt
+
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("user_settings")
+}
+
+model UserActivities {
+  id          BigInt    @id @default(autoincrement())
+  user_id     BigInt
+  device_id   BigInt?
+  event       Int       @db.SmallInt
+  activity    Int       @db.SmallInt
+  status      Int       @default(0) @db.SmallInt
+  description String?   @db.VarChar(255)
+  device_type String?   @db.VarChar(255)
+  device_info String?   @db.VarChar(500)
+  user_agent  String?   @db.VarChar(300)
+  ip_address  String?   @db.VarChar(255)
+  location    String?   @db.VarChar(255)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime? @updatedAt
+
+  user   User         @relation(fields: [user_id], references: [id])
+  device UserDevices? @relation(fields: [device_id], references: [id])
+
+  @@map("user_activities")
+}
