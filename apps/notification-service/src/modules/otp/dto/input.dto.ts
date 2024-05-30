@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsIn, IsString } from 'class-validator';
-import { USER_TYPE } from '../../../helpers/auth_gateway_constants/core_constants';
 
 import {
   OTP_CODE_EVENT,
   OTP_CODE_METHOD,
 } from '../../../helpers/notification.constants';
+import { USER_TYPE } from '../../../../../../libs/helpers/common/common.constant';
 
 export class SendOtpDto {
   @ApiProperty()

@@ -14,6 +14,7 @@ import {
   errorResponse,
   successResponse,
 } from '../../../../../libs/helpers/rest/rest.functions';
+import { postgres_client } from '../../../../auth-gateway-service/src/app/helpers/core_function';
 
 @Injectable()
 export class SmsLibService {
@@ -21,7 +22,9 @@ export class SmsLibService {
   private twilioClient: TwilioClient;
 
   async init() {
-    this.apiSettings = await getSettingsGroup([SETTINGS_GROUP.API]);
+    this.apiSettings = await getSettingsGroup(postgres_client, [
+      SETTINGS_GROUP.API,
+    ]);
     this.twilioClient = Twilio(
       this.apiSettings[SETTINGS_SLUG.TWILIO_ACCOUNT_SID],
       this.apiSettings[SETTINGS_SLUG.TWILIO_AUTH_TOKEN],

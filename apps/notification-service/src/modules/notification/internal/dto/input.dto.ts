@@ -1,8 +1,5 @@
-// import { User } from '../../../models/db/user.model';
-
-import { Staff } from '@prisma/client';
-
-import { UserModel } from '../../../../helpers/core_types';
+import { UserModel } from '../../../../../../../libs/helpers/rest/rest.types';
+import { Staff } from '../../../../../../../libs/prisma/postgres/clients';
 import { USER_NOTIFY_TYPE } from '../../../../helpers/notification.constants';
 export class UserNotificationInput {
   user: UserModel;

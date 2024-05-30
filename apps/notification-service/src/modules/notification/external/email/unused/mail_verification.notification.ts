@@ -1,14 +1,14 @@
 import { Type } from '@nestjs/common';
-import { User } from '@prisma/client';
-import { MessageInterface } from '../../../../../../libs/mail/messages/message.interface';
-import { ChannelInterface } from '../../../../../../libs/notification/channels/channel.interface';
-import { MailChannel } from '../../../../../../libs/notification/channels/mail.channel';
-import { NotificationLibInterface } from '../../../../../../libs/notification/notification.lib.interface';
-import { NotificationTemplate } from '../../../../../../libs/notification/notification.lib.template';
+import { NotificationLibInterface } from '../../../../../lib/notification/notification.lib.interface';
 import {
   emailSubjectAppName,
   fakeTrans,
-} from '../../../../../helpers/notification.functions';
+} from '../../../../../../../../libs/helpers/common/common.functions';
+import { User } from '../../../../../../../../libs/prisma/postgres/clients';
+import { MessageInterface } from '../../../../../lib/mail/messages/message.interface';
+import { ChannelInterface } from '../../../../../lib/notification/channels/channel.interface';
+import { MailChannel } from '../../../../../lib/notification/channels/mail.channel';
+import { NotificationTemplate } from '../../../../../lib/notification/notification.lib.template';
 
 export class MailVerificationNotification implements NotificationLibInterface {
   data: any;

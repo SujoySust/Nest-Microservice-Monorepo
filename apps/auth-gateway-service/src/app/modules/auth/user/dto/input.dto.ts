@@ -17,7 +17,7 @@ import {
   VERIFICATION_CODE_EVENT,
   VERIFICATION_CODE_METHOD,
 } from '../../../../helpers/core_constant';
-import { __ } from '../../../../helpers/core_function';
+import { __ } from '../../../../../../../../libs/helpers/common/common.functions';
 
 @InputType()
 export class SendAuthVerifyCodeInput {
@@ -28,12 +28,12 @@ export class SendAuthVerifyCodeInput {
   @Field()
   @IsInt()
   @IsNotEmpty()
-  event: VERIFICATION_CODE_EVENT;
+  event: number;
 
   @Field()
   @IsInt()
   @IsNotEmpty()
-  method: VERIFICATION_CODE_METHOD;
+  method: number;
 }
 
 @InputType()
@@ -45,12 +45,12 @@ export class VerifyAuthCodeInput {
   @Field()
   @IsInt()
   @IsNotEmpty()
-  event: VERIFICATION_CODE_EVENT;
+  event: number;
 
   @Field()
   @IsInt()
   @IsNotEmpty()
-  method: VERIFICATION_CODE_METHOD;
+  method: number;
 
   @Field()
   @IsNotEmpty()

@@ -2,8 +2,7 @@ import { CustomScalar, Scalar } from '@nestjs/graphql';
 import { Decimal } from '@prisma/client/runtime/library';
 
 import { Kind } from 'graphql';
-import { noExponents } from '../../../app/helpers/core_function';
-
+import { noExponents } from '../../../../../../libs/helpers/common/common.functions';
 
 @Scalar('Decimal', () => Decimal)
 export class DecimalScalar implements CustomScalar<string, number> {

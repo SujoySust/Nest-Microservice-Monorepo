@@ -1,6 +1,6 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
 import { ORDER_DIRECTION } from '../../../lib/graphql/order/order_direction';
-import { DB_QUERY_DEFAULT } from '../../helpers/core_constant';
+import { DB_QUERY_DEFAULT } from '../../../../../../libs/helpers/common/common.constant';
 
 @InputType()
 export class OrderBy {

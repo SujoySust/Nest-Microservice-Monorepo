@@ -1,8 +1,11 @@
 import { FieldMiddleware, MiddlewareContext } from '@nestjs/graphql';
 
 import { CountryData, IpLocationModel } from '../models/db/ip_location.model';
-import { Country_Data, Currencies } from '../helpers/country_data.helper';
 import { getCountry } from '../helpers/core_function';
+import {
+  Country_Data,
+  Currencies,
+} from '../../../../../libs/helpers/common/country_data.helper';
 
 export const CountryDataBinderMiddleware: FieldMiddleware = async (
   ctx: MiddlewareContext,

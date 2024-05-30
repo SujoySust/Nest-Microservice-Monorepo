@@ -2,8 +2,8 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { OtpService } from './otp.service';
 import { SendOtpDto, ValidatePhoneDto, VerifyOtpDto } from './dto/input.dto';
 import { ApiHeaders } from '@nestjs/swagger';
-import { UserEntity } from '../../../libs/decorators/parse_user.decorator';
-import { UserModel } from '../../helpers/core_types';
+import { UserEntity } from '../../../../../libs/decorators/rest/parse_user.decorator';
+import { UserModel } from '../../../../../libs/helpers/rest/rest.types';
 
 @Controller('otp')
 export class OtpController {

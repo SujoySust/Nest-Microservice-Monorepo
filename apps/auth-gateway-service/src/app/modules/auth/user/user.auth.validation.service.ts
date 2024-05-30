@@ -23,7 +23,6 @@ import { PasswordService } from '../../../../lib/auth/password.service';
 import {
   VERIFICATION_CODE_EVENT,
   VERIFICATION_CODE_METHOD,
-  USER_STATUS,
   ACTIVITY_EVENT,
   ACTIVITY,
 } from '../../../helpers/core_constant';
@@ -34,7 +33,10 @@ import {
   errorResponse,
   processException,
 } from '../../../../../../../libs/helpers/graphql/graphql.functions';
-import { COMMON_STATUS } from '../../../../../../../libs/helpers/common/common.constant';
+import {
+  COMMON_STATUS,
+  USER_STATUS,
+} from '../../../../../../../libs/helpers/common/common.constant';
 
 @Injectable()
 export class F_AuthValidationService implements F_AuthValidationInterface {

@@ -19,7 +19,8 @@ export class IpLocationService {
       if (findIpAddress) return findIpAddress;
 
       const TOKEN =
-        (await getSettingValByKey(SETTINGS_SLUG.IP_INFO_TOKEN)) ?? '';
+        (await getSettingValByKey(SETTINGS_SLUG.IP_INFO_TOKEN, postgres_client),
+        postgres_client) ?? '';
       const API_URL = TOKEN
         ? `https://ipinfo.io/${ip_address}?token=${TOKEN}`
         : `https://ipinfo.io/${ip_address}/json`;

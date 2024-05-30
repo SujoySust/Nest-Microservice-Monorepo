@@ -27,7 +27,6 @@ import {
   ACTIVITY,
   ACTIVITY_EVENT,
   REG_TYPE,
-  USER_STATUS,
   VERIFICATION_CODE_EVENT,
   VERIFICATION_CODE_METHOD,
 } from '../../../helpers/core_constant';
@@ -53,6 +52,7 @@ import {
 import {
   CODE,
   COMMON_STATUS,
+  USER_STATUS,
 } from '../../../../../../../libs/helpers/common/common.constant';
 
 @Injectable()

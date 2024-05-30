@@ -54,6 +54,7 @@ model Staff {
   email_verified_at DateTime?
   is_email_verified Boolean   @default(false)
   resetcode         String?   @db.VarChar(255)
+  last_code_sent_at DateTime?
   google2fa_secret  String?   @db.VarChar(255)
   password          String    @db.VarChar(255)
   role_id           Int?

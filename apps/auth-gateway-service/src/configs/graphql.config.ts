@@ -1,9 +1,9 @@
 import { registerAs } from '@nestjs/config';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
 
-import { CODE } from '../app/helpers/core_constant';
-import { __ } from '../app/helpers/core_function';
 import { GraphqlConfig } from './config.interface';
+import { CODE } from '../../../../libs/helpers/common/common.constant';
+import { __ } from '../../../../libs/helpers/common/common.functions';
 
 export const SOCKET_IDS: {
   [socket_id: string]: {

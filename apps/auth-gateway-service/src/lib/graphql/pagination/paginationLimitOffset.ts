@@ -1,6 +1,6 @@
 import { Type } from '@nestjs/common';
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { DB_QUERY_DEFAULT } from '../../../app/helpers/core_constant';
+import { DB_QUERY_DEFAULT } from '../../../../../../libs/helpers/common/common.constant';
 
 export default function PaginatedLimitOffset<TItem>(
   TItemClass: Type<TItem>,

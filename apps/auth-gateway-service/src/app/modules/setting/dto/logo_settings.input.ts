@@ -1,7 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { SETTINGS_SLUG } from '../../../helpers/slug_constants';
 
 import { FileUpload, GraphQLUpload } from 'graphql-upload';
+import { SETTINGS_SLUG } from '../../../../../../../libs/helpers/common/common.slugs';
 @InputType()
 export class logoSettingsInput {
   @Field(() => GraphQLUpload, { nullable: true })

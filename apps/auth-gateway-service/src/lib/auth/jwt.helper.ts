@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthConfig, SecurityConfig } from '../../configs/config.interface';
 import { Token } from './dto/refresh_token.input';
 import { LoginResponse } from './models/login_response.model';
-import { successResponse } from '../../app/helpers/core_function';
+import { successResponse } from '../../../../../libs/helpers/graphql/graphql.functions';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ms = require('ms');

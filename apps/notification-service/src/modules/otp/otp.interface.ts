@@ -1,4 +1,7 @@
-import { ResponseModel, UserModel } from '../../helpers/core_types';
+import {
+  ResponseModel,
+  UserModel,
+} from '../../../../../libs/helpers/rest/rest.types';
 import { SendOtpDto, VerifyOtpDto } from './dto/input.dto';
 
 export interface OtpInterface {

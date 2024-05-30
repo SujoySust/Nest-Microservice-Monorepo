@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { User } from '../../../../../../libs/prisma/postgres/clients';
 import { NotificationLibInterface } from '../notification.lib.interface';
 import { ChannelInterface } from './channel.interface';
 // import { User } from '../../../app/models/db/user.model'; // TODO: will change it

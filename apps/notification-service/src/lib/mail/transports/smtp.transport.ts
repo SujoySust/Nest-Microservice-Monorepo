@@ -1,8 +1,8 @@
 import { TransportInterface } from './transport.interface';
 import { createTransport, Transporter } from 'nodemailer';
 import { Options as MailOptions } from 'nodemailer/lib/mailer';
-import { SmtpConfig } from '../../../configs/config.interface';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { SmtpConfig } from '../../../config/config.interface';
 
 export class SmtpTransport implements TransportInterface {
   private smtpTransporter: Transporter<SMTPTransport.SentMessageInfo>;

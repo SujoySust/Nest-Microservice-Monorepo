@@ -1,19 +1,5 @@
 import { __ as trans } from '@squareboat/nestjs-localization';
-import { MongoService, PostgresService } from '../../prisma/src';
-import { NestExpressApplication } from '@nestjs/platform-express';
-import { INestApplication } from '@nestjs/common';
-import { RedisPubSubService } from '../../../apps/auth-gateway-service/src/lib/pubsub/redis_pub_sub.service';
-
-export let app: NestExpressApplication | INestApplication;
-export let redis_pub_sub: RedisPubSubService;
-export let postgres_client: PostgresService;
-export let mongo_client: MongoService;
-
-export function setApp(nestapp: NestExpressApplication | INestApplication) {
-  app = nestapp;
-  postgres_client = app.get(PostgresService);
-  mongo_client = app.get(MongoService);
-}
+import { PostgresService } from '../../prisma/src/postgres.service';
 
 export function getAppKey() {
   return process.env.APP_KEY || 'AppKeyShouldBeMinimum16Characters';
@@ -218,9 +204,8 @@ export function cleanMultiSlash(endpoint, replaceWith = '/') {
 
 export async function getSettingValByKey(
   key_or_slug: string,
-  prisma?: PostgresService | null,
+  prisma: PostgresService | null,
 ): Promise<string> {
-  prisma = prisma ? prisma : postgres_client;
   const setting = await prisma.setting.findFirst({
     where: {
       option_key: key_or_slug,
@@ -230,11 +215,10 @@ export async function getSettingValByKey(
 }
 
 export async function getSettingsGroup(
+  prisma: PostgresService,
   group_names?: string[],
   key_or_slugs?: string[],
-  prisma?: PostgresService,
 ) {
-  prisma = prisma ? prisma : postgres_client;
   const setting = await prisma.setting.findMany({
     where: {
       OR: [

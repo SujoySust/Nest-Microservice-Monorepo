@@ -1,5 +1,5 @@
 import { FieldMiddleware, MiddlewareContext, NextFn } from '@nestjs/graphql';
-import { __ } from '../helpers/core_function';
+import { __ } from '../../../../../libs/helpers/common/common.functions';
 
 export const TranslationMW: FieldMiddleware = async (
   ctx: MiddlewareContext,

@@ -1,13 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsIn, IsOptional } from 'class-validator';
-import { USER_TYPE } from '../../../helpers/auth_gateway_constants/core_constants';
 import {
   EXTERNAL_NOTIFICATION_METHOD,
   NOTIFICATION_EVENTS,
   NOTIFICATION_TYPE,
 } from '../../../helpers/notification.constants';
-import { __ } from '../../../helpers/notification.functions';
 import { NotificationEventData } from './response.dto';
+import { USER_TYPE } from '../../../../../../libs/helpers/common/common.constant';
+import { __ } from '../../../../../../libs/helpers/common/common.functions';
 
 export class SendNotificationDto {
   @ApiProperty({ description: __('Type of user: user, staff') })

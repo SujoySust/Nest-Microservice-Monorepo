@@ -1,41 +1,54 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+
 import { authenticator } from 'otplib';
+
+import { DefaultArgs } from '@prisma/client/runtime/library';
 
 import { __ } from '@squareboat/nestjs-localization';
 import { EmailLibService } from './email.lib.service';
 import { SmsLibService } from './sms.lib.service';
 import {
-  OTP_CODE_EVENT,
-  OTP_CODE_METHOD,
-} from '../../helpers/notification.constants';
+  USER_TYPE,
+  COMMON_STATUS,
+} from '../../../../../libs/helpers/common/common.constant';
 import {
-  ResponseModel,
-  UserModel,
-} from '../../../../../libs/helpers/rest/rest.types';
-import {
+  fakeTrans,
+  getSettingsGroup,
+  getRandomInt,
   addMinutes,
   diff_seconds,
-  fakeTrans,
-  getRandomInt,
-  getSettingsGroup,
-  postgres_client,
   ucfirst,
 } from '../../../../../libs/helpers/common/common.functions';
-import {
-  USER_CREDENTIALS,
-  VERIFY_CODE_EXPIRATION_TIME_IN_MIN,
-  VERIFY_CODE_RESEND_TIME_IN_SEC,
-} from '../../../../auth-gateway-service/src/app/helpers/core_constant';
-import {
-  errorResponse,
-  successResponse,
-} from '../../../../../libs/helpers/rest/rest.functions';
 import {
   SETTINGS_GROUP,
   SETTINGS_SLUG,
 } from '../../../../../libs/helpers/common/common.slugs';
-import { COMMON_STATUS } from '../../../../../libs/helpers/common/common.constant';
-import { UserVerifyCodes } from '../../../../../libs/prisma/postgres/clients';
+import {
+  errorResponse,
+  successResponse,
+} from '../../../../../libs/helpers/rest/rest.functions';
+import { ResponseModel } from '../../../../../libs/helpers/rest/rest.types';
+import { UserModel } from '../../../../../libs/helpers/rest/rest.types';
+
+import {
+  Prisma,
+  PrismaClient,
+  UserVerifyCodes,
+} from '../../../../../libs/prisma/postgres/clients';
+
+import {
+  VERIFY_CODE_EXPIRATION_TIME_IN_MIN,
+  VERIFY_CODE_RESEND_TIME_IN_SEC,
+  USER_CREDENTIALS,
+} from '../../../../auth-gateway-service/src/app/helpers/core_constant';
+
+import {
+  OTP_CODE_METHOD,
+  OTP_CODE_EVENT,
+} from '../../helpers/notification.constants';
+
+import { SendOtpDto, VerifyOtpDto } from '../../modules/otp/dto/input.dto';
+import { postgres_client } from '../../helpers/notification.functions';
 
 @Injectable()
 export class OtpLibService {
@@ -48,21 +61,23 @@ export class OtpLibService {
   }
 
   // user send otp code
-  async send(
-    method: OTP_CODE_METHOD,
-    user: UserModel,
-    event: number,
-  ): Promise<ResponseModel> {
-    const data = await this.generateCode(user.id, method, event);
+  async send(user: UserModel, data: SendOtpDto): Promise<ResponseModel> {
+    const { user_type, method, event } = data;
+
+    const code_data = await this.generateCode(user.id, method, event);
 
     const message =
-      this.OtpCodeEventMessages(data.code, method)[event] ??
-      fakeTrans('Your verification OTP code is ') + data.code;
+      this.OtpCodeEventMessages(code_data.code, method)[event] ??
+      fakeTrans('Your verification OTP code is ') + code_data.code;
 
-    await this.createCode(data);
+    if (user_type == USER_TYPE.USER) {
+      await this.createUserOtpCode(code_data);
+    } else if (user_type == USER_TYPE.STAFF) {
+      await this.createStaffOtpCode(Number(user.id), code_data.code);
+    }
 
     if (method == OTP_CODE_METHOD.EMAIL) {
-      return await this.email_service.sendEmail(user, data.code, message);
+      return await this.email_service.sendEmail(user, code_data.code, message);
     } else if (method == OTP_CODE_METHOD.SMS) {
       await this.sms_service.init();
       return this.sms_service.sendSms(user.phone, message);
@@ -73,28 +88,51 @@ export class OtpLibService {
 
   // user verify otp code
   async verifyCode(
-    userId: bigint,
-    method: number,
-    event: number,
-    code: string,
+    user_or_staff_id: bigint | number | string,
+    code_input: VerifyOtpDto,
   ) {
-    const check_code = await postgres_client.userVerifyCodes.findFirst({
-      where: {
-        user_id: userId,
-        method: method,
-        event: event,
-        code: code,
-        status: COMMON_STATUS.STATUS_INACTIVE,
-        expires_at: {
-          gt: new Date(),
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
+    const { user_type } = code_input;
+    if (user_type == USER_TYPE.USER) {
+      return this.verifyUserCode(BigInt(user_or_staff_id), code_input);
+    } else if (user_type == USER_TYPE.STAFF) {
+      return this.verifyStaffCode(Number(user_or_staff_id), code_input);
+    }
+  }
 
-    if (check_code) {
+  async verifyUserCode(userId: bigint, code_input: VerifyOtpDto) {
+    const { method, event, code } = code_input;
+
+    if (method == OTP_CODE_METHOD.GAUTH) {
+      const user_setting = await postgres_client.userSetting.findFirst({
+        where: {
+          user_id: userId,
+        },
+        select: {
+          google2fa_secret: true,
+        },
+      });
+      return await this.verifyG2fa(user_setting.google2fa_secret, code);
+    } else {
+      const check_code = await postgres_client.userVerifyCodes.findFirst({
+        where: {
+          user_id: userId,
+          method: method,
+          event: event,
+          code: code,
+          status: COMMON_STATUS.STATUS_INACTIVE,
+          expires_at: {
+            gt: new Date(),
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (!check_code) {
+        return errorResponse(__('Invalid code or expired'));
+      }
+
       await postgres_client.userVerifyCodes.update({
         where: {
           id: check_code.id,
@@ -105,21 +143,62 @@ export class OtpLibService {
         },
       });
       return successResponse(__('Code verified successfully'));
+    }
+  }
+
+  async verifyStaffCode(staff_id: number, code_input: VerifyOtpDto) {
+    const { method, code } = code_input;
+    if (method == OTP_CODE_METHOD.GAUTH) {
+      const staff = await postgres_client.staff.findFirst({
+        where: {
+          id: staff_id,
+        },
+        select: {
+          google2fa_secret: true,
+        },
+      });
+      return await this.verifyG2fa(staff.google2fa_secret, code);
     } else {
-      return errorResponse(__('Invalid code or expired'));
+      const check_code = await postgres_client.staff.findFirst({
+        where: {
+          id: staff_id,
+          resetcode: code,
+          last_code_sent_at: {
+            gt: new Date(),
+          },
+        },
+        select: {
+          resetcode: true,
+          last_code_sent_at: true,
+        },
+      });
+
+      if (!check_code) {
+        return errorResponse(__('Invalid code or expired'));
+      }
+
+      await postgres_client.staff.update({
+        where: {
+          id: staff_id,
+        },
+        data: {
+          resetcode: null,
+          last_code_sent_at: null,
+        },
+      });
+      return successResponse(__('Code verified successfully'));
     }
   }
 
   // verifiy user g2fa
-  async verifyG2fa(user: UserModel, code: string): Promise<ResponseModel> {
+  async verifyG2fa(secret: string, code: string): Promise<ResponseModel> {
     if (
       !authenticator.verify({
         token: code,
-        secret: '',
-        // secret: user?.setting?.google2fa_secret,
+        secret: secret,
       })
     )
-      throw new BadRequestException(errorResponse(__('Invalid OTP code')));
+      return errorResponse(__('Invalid OTP code'));
     return successResponse('');
   }
 
@@ -134,7 +213,9 @@ export class OtpLibService {
     method: number,
     event: number,
   ) {
-    const settings = getSettingsGroup([SETTINGS_GROUP.APPLICATION]);
+    const settings = getSettingsGroup(postgres_client, [
+      SETTINGS_GROUP.APPLICATION,
+    ]);
 
     const verify_code_expiration_time_in_sec =
       settings[SETTINGS_SLUG.VERIFY_CODE_EXPIRATION_TIME_IN_MIN] ??
@@ -157,7 +238,13 @@ export class OtpLibService {
   }
 
   // create user verify code data
-  private async createCode(data: UserVerifyCodes, prisma?: any) {
+  private async createUserOtpCode(
+    data: UserVerifyCodes,
+    prisma?: Omit<
+      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+      '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+    >,
+  ) {
     prisma = prisma ?? postgres_client;
     const alreadyHave = await prisma.userVerifyCodes.findFirst({
       where: {
@@ -169,7 +256,9 @@ export class OtpLibService {
     let verifyCode: UserVerifyCodes;
     if (alreadyHave) {
       const secDiff = diff_seconds(new Date(), alreadyHave.last_sent_at);
-      const settings = await getSettingsGroup([SETTINGS_GROUP.APPLICATION]);
+      const settings = await getSettingsGroup(postgres_client, [
+        SETTINGS_GROUP.APPLICATION,
+      ]);
 
       const verify_code_resend_time_in_sec = settings[
         SETTINGS_SLUG.VERIFY_CODE_RESEND_TIME_IN_SEC
@@ -199,6 +288,67 @@ export class OtpLibService {
       });
     }
     return verifyCode;
+  }
+
+  private async createStaffOtpCode(
+    staff_id: number,
+    code: string,
+    prisma?: Omit<
+      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+      '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+    >,
+  ) {
+    prisma = prisma ?? postgres_client;
+    const staff = await prisma.staff.findFirst({
+      where: {
+        id: staff_id,
+      },
+      select: {
+        resetcode: true,
+        last_code_sent_at: true,
+      },
+    });
+    if (!staff) {
+      throw new BadRequestException(errorResponse(__('Invalid request!')));
+    }
+
+    if (staff.resetcode && staff.last_code_sent_at) {
+      await this.validateResendCodeTime(staff.last_code_sent_at);
+    }
+
+    await prisma.staff.update({
+      where: {
+        id: staff_id,
+      },
+      data: {
+        resetcode: code,
+        last_code_sent_at: new Date(),
+      },
+    });
+  }
+
+  private async validateResendCodeTime(last_sent_at: Date) {
+    const secDiff = diff_seconds(new Date(), last_sent_at);
+    const settings = await getSettingsGroup(postgres_client, [
+      SETTINGS_GROUP.APPLICATION,
+    ]);
+
+    const verify_code_resend_time_in_sec = settings[
+      SETTINGS_SLUG.VERIFY_CODE_RESEND_TIME_IN_SEC
+    ]
+      ? parseFloat(settings[SETTINGS_SLUG.VERIFY_CODE_RESEND_TIME_IN_SEC])
+      : VERIFY_CODE_RESEND_TIME_IN_SEC;
+
+    if (secDiff < verify_code_resend_time_in_sec)
+      throw new BadRequestException(
+        errorResponse(
+          __(
+            'Please resend code after ' +
+              (verify_code_resend_time_in_sec - secDiff) +
+              ' secs',
+          ),
+        ),
+      );
   }
 
   // get otp code event message

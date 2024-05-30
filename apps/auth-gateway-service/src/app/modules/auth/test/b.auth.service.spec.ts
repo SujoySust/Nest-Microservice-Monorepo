@@ -10,8 +10,8 @@ import { B_AuthService } from '../staff/staff.auth.service';
 import { JwtHelper } from '../../../../lib/auth/jwt.helper';
 import { PasswordService } from '../../../../lib/auth/password.service';
 import { setApp, postgres_client } from '../../../helpers/core_function';
-import { PostgresService } from '../../../../../../../libs/prisma/src';
 import { TestModuleDependecy } from '../../../../../test/unit/module.dependency';
+import { PostgresService } from '../../../../../../../libs/prisma/src/postgres.service';
 
 describe('StaffAuthService', () => {
   let staffAuthService: B_AuthService;

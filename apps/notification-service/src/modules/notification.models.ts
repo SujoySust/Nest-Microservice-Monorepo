@@ -1,6 +1,6 @@
+import { HideField } from '../../../../libs/decorators/rest/field_related.decorator';
 import { UserNotification } from '../../../../libs/prisma/postgres/clients';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { HideField } from './decorators/field_related.decorator';
 
 export class UserNotificationModel implements UserNotification {
   constructor(user_notification: Partial<UserNotification>) {

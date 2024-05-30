@@ -7,12 +7,12 @@ import { MessageInterface } from '../mail/messages/message.interface';
 import {
   base_url,
   frontend_app_url,
-  postgres_client,
 } from '../../../../../libs/helpers/common/common.functions';
 import {
   SETTINGS_GROUP,
   SETTINGS_SLUG,
 } from '../../../../../libs/helpers/common/common.slugs';
+import { postgres_client } from '../../helpers/notification.functions';
 
 export class NotificationTemplate {
   static async toEmail(

@@ -1,15 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
-import {
-  SETTINGS_GROUP,
-  SETTINGS_SLUG,
-} from '../../app/helpers/auth_gateway_constants/slug_constants';
-import { appName, getSettingsGroup } from '../../app/helpers/core_functions';
-import { MailConfig } from '../../configs/config.interface';
 import { MessageInterface } from './messages/message.interface';
 import { transports } from './transports';
 import { TransportInterface } from './transports/transport.interface';
+import {
+  getSettingsGroup,
+  appName,
+} from '../../../../../libs/helpers/common/common.functions';
+import {
+  SETTINGS_GROUP,
+  SETTINGS_SLUG,
+} from '../../../../../libs/helpers/common/common.slugs';
+import { MailConfig } from '../../config/config.interface';
+import { postgres_client } from '../../../../auth-gateway-service/src/app/helpers/core_function';
 
 @Injectable()
 export class MailService {
@@ -24,7 +28,9 @@ export class MailService {
     message: MessageInterface,
     from?: { address?: string; name?: string },
   ) {
-    const mailSettings = await getSettingsGroup([SETTINGS_GROUP.EMAIL]);
+    const mailSettings = await getSettingsGroup(postgres_client, [
+      SETTINGS_GROUP.EMAIL,
+    ]);
     const defaultMailer =
       mailSettings[SETTINGS_SLUG.MAIL_DIRIVER] || this.mailConfig.defaultMailer;
     const mailConfig = {
@@ -45,8 +51,9 @@ export class MailService {
         mailSettings[SETTINGS_SLUG.MAIL_ENCRYPTION] ||
         this.mailConfig.mailers[defaultMailer].encryption,
     };
-    const transport: TransportInterface =
-      await this.resolveTransport(defaultMailer);
+    const transport: TransportInterface = await this.resolveTransport(
+      defaultMailer,
+    );
     const data = message.options ?? (await message.toTransporter());
     const mail_from_address = mailSettings[SETTINGS_SLUG.MAIL_FROM_ADDRESS];
     const mail_from_name = mailSettings[SETTINGS_SLUG.MAIL_FROM_NAME];

@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { OtpLibService } from '../../../libs/otp/otp.lib.service';
-import { ResponseModel, UserModel } from '../../helpers/core_types';
 import { OTP_CODE_METHOD } from '../../helpers/notification.constants';
+
+import { SendOtpDto, VerifyOtpDto } from './dto/input.dto';
+import { OtpInterface } from './otp.interface';
+import { OtpLibService } from '../../lib/otp/otp.lib.service';
+import {
+  ResponseModel,
+  UserModel,
+} from '../../../../../libs/helpers/rest/rest.types';
 import {
   processException,
   successResponse,
-} from '../../helpers/notification.functions';
-import { SendOtpDto, VerifyOtpDto } from './dto/input.dto';
-import { OtpInterface } from './otp.interface';
+} from '../../../../../libs/helpers/rest/rest.functions';
 
 @Injectable()
 export class OtpService implements OtpInterface {
@@ -15,8 +19,7 @@ export class OtpService implements OtpInterface {
 
   async send(user: UserModel, data: SendOtpDto): Promise<ResponseModel> {
     try {
-      const { method, event } = data;
-      return await this.otp_lib_service.send(method, user, event);
+      return await this.otp_lib_service.send(user, data);
     } catch (error) {
       processException(error);
     }
@@ -24,18 +27,7 @@ export class OtpService implements OtpInterface {
 
   async verify(user: UserModel, data: VerifyOtpDto): Promise<ResponseModel> {
     try {
-      const { code, method, event } = data;
-
-      if (method === OTP_CODE_METHOD.GAUTH) {
-        return this.otp_lib_service.verifyG2fa(user, code);
-      } else {
-        return await this.otp_lib_service.verifyCode(
-          BigInt(user.id),
-          method,
-          event,
-          code,
-        );
-      }
+      return await this.otp_lib_service.verifyCode(user.id, data);
     } catch (error) {
       processException(error);
     }

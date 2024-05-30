@@ -1,0 +1,344 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type LoginResponse {
+  """JWT access token"""
+  accessToken: String
+
+  """custom code"""
+  code: Int!
+  deviceToken: String
+  deviceTokenExpireAt: DateTime
+
+  """JWT expiration time"""
+  expireAt: DateTime
+
+  """message"""
+  message: String
+
+  """JWT refresh token"""
+  refreshToken: String
+
+  """success"""
+  success: Boolean!
+  user: User!
+}
+
+type Mutation {
+  m_b_auth_login(data: StaffLoginInput!): Token!
+  m_b_auth_refreshToken: Token!
+  m_b_auth_resetPassword(data: StaffPasswordResetInput!): ResponseModel!
+  m_b_auth_sendForgetPasswordMail(data: SendStaffForgotPasswordEmailInput!): ResponseModel!
+  m_b_setting_apiSettingsSave(data: apiSettingsInput!): ResponseModel!
+  m_b_setting_applicationSettingsSave(data: applicationSettingsInput!): ResponseModel!
+  m_b_setting_generalSettingsSave(data: generalSettingsInput!): ResponseModel!
+  m_b_setting_mailSettingsSave(data: mailSettingsInput!): ResponseModel!
+  m_b_setting_metaSettingsSave(data: metaSettingsInput!): ResponseModel!
+  m_b_setting_socialSettingsSave(data: socialSettingsInput!): ResponseModel!
+  m_f_auth_login(login_data: UserLoginInput!): LoginResponse!
+  m_f_auth_logout: ResponseModel!
+  m_f_auth_refreshToken: LoginResponse!
+  m_f_auth_resetPassword(data: PasswordResetInput!): ResponseModel!
+  m_f_auth_sendAuthVerificationCode(data: SendAuthVerifyCodeInput!): ResponseModel!
+  m_f_auth_sendForgetPasswordOtp(data: SendForgotPasswordOtpInput!): ResponseModel!
+  m_f_auth_signup(data: SignupInput!): LoginResponse!
+  m_f_auth_socialLogin(data: UserSocialLoginInput!): LoginResponse!
+  m_f_auth_verifyAuthCode(data: VerifyAuthCodeInput!): LoginResponse!
+}
+
+input PasswordResetInput {
+  code: String!
+  email: String
+  password: String!
+  password_confirm: String!
+  phone: String
+}
+
+type Query {
+  m_b_auth_getStaffByUsername(username: String!): Staff!
+  q_b_setting_getSettingsData(optionGroup: [String!], slug: [String!]): [Setting!]!
+  q_c_setting_getSettingsData(optionGroup: [String!], slug: [String!]): [Setting!]!
+  q_f_auth_getUserByCode(usercode: String!): User!
+}
+
+type ResponseModel {
+  """custom code"""
+  code: Int!
+
+  """message"""
+  message: String
+
+  """success"""
+  success: Boolean!
+}
+
+type Role {
+  created_at: DateTime
+  id: Int!
+  name: String!
+  permissions: String
+  updated_at: DateTime
+}
+
+input SendAuthVerifyCodeInput {
+  event: Int!
+  method: Int!
+  user_code: String!
+}
+
+input SendForgotPasswordOtpInput {
+  email: String
+  phone: String
+}
+
+input SendStaffForgotPasswordEmailInput {
+  email: String!
+}
+
+type Setting {
+  option_group: String
+  option_key: String!
+  option_value: String
+  value_type: Int
+}
+
+input SignupInput {
+  email: String
+  nickname: String
+  password: String!
+  password_confirm: String!
+  phone: String
+  referral_code: String
+}
+
+type Staff {
+  avatar: String
+  createdAt: DateTime
+  description: String
+  email: String!
+  google2fa_enabled: Boolean!
+  id: Int!
+  name: String!
+  online_status: Int!
+  phone: String
+  resetcode: String
+  role: Role!
+  role_id: Int
+  status: Int!
+  updatedAt: DateTime
+  username: String!
+}
+
+input StaffLoginInput {
+  password: String!
+  username: String!
+}
+
+input StaffPasswordResetInput {
+  code: String!
+  email: String
+  password: String!
+  password_confirm: String!
+}
+
+type Token {
+  """JWT access token"""
+  accessToken: String
+
+  """custom code"""
+  code: Int!
+
+  """JWT expiration time"""
+  expireAt: DateTime
+
+  """message"""
+  message: String
+
+  """JWT refresh token"""
+  refreshToken: String
+
+  """success"""
+  success: Boolean!
+  user: Staff!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+type User {
+  avatar: String!
+
+  """Identifies the date and time when the object was created."""
+  created_at: DateTime!
+  devices: [UserDeviceModel!]
+  email: String
+  fullname: String
+  info: UserInfo
+  nickname: String
+  notification_settings: UserNotificationSetting
+  online_status: Int!
+  phone: String
+  referral_parent: User
+  reg_type: Int!
+  setting: UserSetting
+  social_id: String
+  status: Int!
+  type: Int!
+
+  """Identifies the date and time when the object was last updated."""
+  updated_at: DateTime!
+  usercode: String!
+  verify_codes: [UserVerifyCodes!]
+}
+
+type UserDeviceModel {
+  """Identifies the date and time when the object was created."""
+  created_at: DateTime!
+  device_info: String
+  device_token: String!
+  device_token_expires_at: DateTime
+  device_type: String
+  ip_address: String
+  is_logged_in: Boolean!
+  location: String
+  status: Int!
+
+  """Identifies the date and time when the object was last updated."""
+  updated_at: DateTime!
+  user_agent: String
+}
+
+type UserInfo {
+  country: String!
+
+  """Identifies the date and time when the object was created."""
+  created_at: DateTime!
+
+  """Identifies the date and time when the object was last updated."""
+  updated_at: DateTime!
+}
+
+input UserLoginInput {
+  email: String
+  password: String
+  phone: String
+}
+
+type UserNotificationSetting {
+  """Identifies the date and time when the object was created."""
+  created_at: DateTime!
+  event_names: String
+  events: String
+
+  """Identifies the date and time when the object was last updated."""
+  updated_at: DateTime!
+}
+
+type UserSetting {
+  address_verified: Int
+  address_verify_reject_reason: String
+  advertising_enabled: Int
+  anti_phishing_code: Int
+
+  """Identifies the date and time when the object was created."""
+  created_at: DateTime!
+  default_deposit_wallet_type: Int
+  device_check_enabled: Int
+  email_marketing_enabled: Int
+  email_verified: Int
+  google2fa_enabled: Boolean!
+  identity_verified: Int
+  identity_verify_reject_reason: String
+  last_anti_phishing_updated_at: DateTime
+  last_email_verified_at: DateTime
+  last_google2fa_updated_at: DateTime
+  last_identity_verified_at: DateTime
+  last_login_time: DateTime
+  last_phone_verified_at: DateTime
+  login_twofa_enabled: Int
+  market_analytics_enabled: Int
+  phone_verified: Int
+
+  """Identifies the date and time when the object was last updated."""
+  updated_at: DateTime!
+}
+
+input UserSocialLoginInput {
+  reg_type: Int!
+  token: String!
+}
+
+type UserVerifyCodes {
+  """Identifies the date and time when the object was created."""
+  created_at: DateTime!
+
+  """Identifies the date and time when the object was last updated."""
+  updated_at: DateTime!
+}
+
+input VerifyAuthCodeInput {
+  code: String!
+  event: Int!
+  method: Int!
+  user_code: String!
+}
+
+input apiSettingsInput {
+  aws_s3_access_key: String
+  aws_s3_bucket: String
+  aws_s3_key_secret: String
+  aws_s3_region: String
+  google_analytics_measurement_id: String
+  ip_info_token: String
+  sentry_dsn: String
+  twilio_account_sid: String
+  twilio_auth_token: String
+  twilio_phone_number: String
+}
+
+input applicationSettingsInput {
+  phone_2fa_otp_is_enabled: String
+  verify_code_expiration_time_in_min: String
+  verify_code_resend_time_in_sec: String
+}
+
+input generalSettingsInput {
+  address: String
+  application_title: String
+  contract_email: String
+  contract_phone: String
+  copy_right_text: String
+}
+
+input mailSettingsInput {
+  mail_driver: String
+  mail_encryption: String
+  mail_from_address: String
+  mail_from_name: String
+  mail_host: String
+  mail_password: String
+  mail_port: String
+  mail_username: String
+}
+
+input metaSettingsInput {
+  meta_description: String
+  meta_image_url: Upload
+  meta_title: String
+  meta_type: String
+}
+
+input socialSettingsInput {
+  discord_link: String
+  facebook_link: String
+  instagram_link: String
+  linkedin_link: String
+  twitter_link: String
+  whatsapp_link: String
+}

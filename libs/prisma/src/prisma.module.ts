@@ -11,6 +11,6 @@ import { ConfigModule } from '@nestjs/config';
     }),
   ],
   providers: [PostgresService, MongoService],
-  exports: [PostgresService, MongoService],
+  exports: [],
 })
 export class PrismaModule {}

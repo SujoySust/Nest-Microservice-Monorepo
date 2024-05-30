@@ -1,4 +1,4 @@
-import { UserNotification } from '@prisma/client';
+import { UserNotification } from '../../../../../../../libs/prisma/postgres/clients';
 import { USER_NOTIFY_TYPE } from '../../../../helpers/notification.constants';
 
 export class UserNotificationDateRes {

@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IpLocationService } from '../ip_location.service';
 import { setApp } from '../../helpers/core_function';
-import { PostgresService } from '../../../../../../libs/prisma/src';
+import { PostgresService } from '../../../../../../libs/prisma/src/postgres.service';
 
 describe('IpLocationService', () => {
   let ipLocationService: IpLocationService;

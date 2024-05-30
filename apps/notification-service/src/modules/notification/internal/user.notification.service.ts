@@ -30,7 +30,7 @@ import {
   Prisma,
   UserNotification,
 } from '../../../../../../libs/prisma/postgres/clients';
-import { postgres_client } from '../../../../../../libs/helpers/common/common.functions';
+import { postgres_client } from '../../../helpers/notification.functions';
 
 @Injectable()
 export class UserNotificationService

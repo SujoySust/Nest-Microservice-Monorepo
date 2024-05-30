@@ -21,6 +21,7 @@ import {
   detectDeviceType,
   getUUID,
   getLocation,
+  app,
 } from '../../../helpers/core_function';
 import {
   CODE,
@@ -34,10 +35,7 @@ import {
 const ms = require('ms');
 @Injectable()
 export class F_DeviceVerificationService {
-  constructor(
-    private readonly ipLocationService: IpLocationService,
-    private readonly activityService: UserActivityService,
-  ) {}
+  constructor(private readonly activityService: UserActivityService) {}
 
   async getDeviceByToken(
     deviceToken: string,
@@ -67,7 +65,7 @@ export class F_DeviceVerificationService {
     const device = parseDeviceInfo(userAgent);
     const device_type = detectDeviceType({ device });
     const location = getLocation(
-      await this.ipLocationService.getOrCreateIpLocation(req.ip),
+      await app.get(IpLocationService).getOrCreateIpLocation(req.ip),
     );
 
     const newDevice = await postgres_client.userDevices.create({

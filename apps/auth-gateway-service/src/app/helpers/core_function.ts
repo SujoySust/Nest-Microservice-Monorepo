@@ -11,19 +11,21 @@ import {
   STAFF_SOCKET_IDS,
   USER_SOCKET_IDS,
 } from '../../configs/graphql.config';
-import { MongoService, PostgresService } from '../../../../../libs/prisma/src';
 import { randomUUID } from 'crypto';
 import { IpLocationModel } from '../models/db/ip_location.model';
 import DeviceDetector, { DeviceDetectorResult } from 'device-detector-js';
-import { DEVICE_TYPE, USER_STATUS } from './core_constant';
+import { DEVICE_TYPE } from './core_constant';
 import { errorResponse } from '../../../../../libs/helpers/graphql/graphql.functions';
 import { __ } from '../../../../../libs/helpers/common/common.functions';
 import {
   CODE,
   COMMON_STATUS,
+  USER_STATUS,
 } from '../../../../../libs/helpers/common/common.constant';
 import { DEVICE_TYPES_FOR_MOBILE } from './core_objects';
 import { COUNTRY_LIST } from '../../../../../libs/helpers/common/common.objects';
+import { PostgresService } from '../../../../../libs/prisma/src/postgres.service';
+import { MongoService } from '../../../../../libs/prisma/src/mongo.service';
 
 export let app: NestExpressApplication | INestApplication;
 export let redis_pub_sub: RedisPubSubService;

@@ -7,8 +7,6 @@ export class PostgresService
   implements OnModuleInit, OnModuleDestroy
 {
   constructor() {
-    console.log('calling postgres');
-    console.log(process.env.DATABASE_URL);
     super({
       datasources: {
         db: {

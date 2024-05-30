@@ -1,6 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { FileUpload, GraphQLUpload } from 'graphql-upload';
-import { SETTINGS_SLUG } from '../../../helpers/slug_constants';
+import { SETTINGS_SLUG } from '../../../../../../../libs/helpers/common/common.slugs';
 
 @InputType()
 export class metaSettingsInput {

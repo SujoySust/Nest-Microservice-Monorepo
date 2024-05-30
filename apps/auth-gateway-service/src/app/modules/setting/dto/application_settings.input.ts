@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { SETTINGS_SLUG } from '../../../helpers/slug_constants';
+import { SETTINGS_SLUG } from '../../../../../../../libs/helpers/common/common.slugs';
 
 @InputType()
 export class applicationSettingsInput {

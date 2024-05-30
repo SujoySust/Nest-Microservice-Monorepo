@@ -8,8 +8,9 @@ import {
   sendNotFoundException,
 } from '../../helpers/rest/rest.functions';
 
-import { __, postgres_client } from '../../helpers/common/common.functions';
+import { __ } from '../../helpers/common/common.functions';
 import { USER_TYPE } from '../../helpers/common/common.constant';
+import { postgres_client } from '../../../apps/notification-service/src/helpers/notification.functions';
 
 export const UserEntity = createParamDecorator(
   async (data: unknown, ctx: ExecutionContext): Promise<UserModel> => {

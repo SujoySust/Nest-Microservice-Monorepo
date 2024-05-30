@@ -1,8 +1,10 @@
 import { NestFactory } from '@nestjs/core';
-import { NotificationServiceModule } from './notification-service.module';
+import { NotificationServiceModule } from './modules/notification-service.module';
+import { setApp } from './helpers/notification.functions';
 
 async function bootstrap() {
   const app = await NestFactory.create(NotificationServiceModule);
-  await app.listen(3000);
+  setApp(app);
+  await app.listen(process.env.NOTIFICATION_SERVICE_PORT);
 }
 bootstrap();
